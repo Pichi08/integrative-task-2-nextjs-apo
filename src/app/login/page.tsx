@@ -17,7 +17,7 @@ export default function LoginPage() {
             loginFunction(login, password)
                 .then((res) => {
                     console.log(res);
-                    router.push("/home");
+                    router.push("/");
                 })
                 .catch((err) => {
                     alert("Invalid login or password");
