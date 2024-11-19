@@ -2,20 +2,120 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+.messaging-app {
+  display: flex;
+  height: 100vh;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+.sidebar {
+  width: 25%;
+  background: #e3e3e3;
+  padding: 20px;
+  border-right: 1px solid #ddd;
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+.chat-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
+
+.header {
+  background: #007bff;
+  color: #333; /* Cambiado de blanco a gris oscuro */
+  padding: 15px;
+  text-align: center;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.chat-window {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+  background: #fafafa;
+  color: #333; /* Asegurando texto legible */
+}
+
+.message-input {
+  display: flex;
+  padding: 10px;
+  border-top: 1px solid #ddd;
+}
+
+.message-input input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  margin-right: 10px;
+  color: #333; /* Asegurando texto visible en input */
+}
+
+.message-input button {
+  padding: 10px 20px;
+  background: #007bff;
+  color: #fff; /* Manteniendo contraste en el botón */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.message-input button:hover {
+  background: #0056b3; /* Cambia el color al pasar el mouse */
+}
+
+.conversation-list ul {
+  list-style: none;
+  padding: 0;
+  color: #333; /* Asegurando texto legible */
+}
+
+.conversation-list li {
+  padding: 10px;
+  cursor: pointer;
+  border-bottom: 1px solid #ddd;
+  color: #333; /* Color de texto visible */
+}
+
+.conversation-list li:hover {
+  background: #e0e0e0; /* Mejora la visualización al pasar el mouse */
+}
+
+.conversation-list h2 {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+  color: #333; /* Ajustando título visible */
+}
+
+button {
+  font-size: 1rem;
+}
+
+.header {
+  background: #007bff;
+  color: #fff;
+  padding: 15px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.logout-icon {
+  background: none;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.logout-icon:hover {
+  color: #ffcccc; /* Cambia el color al pasar el mouse */
+}
+
