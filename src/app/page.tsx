@@ -7,6 +7,7 @@ import { v4 as uuidv4 } from 'uuid';
 import ConversationList from '../components/ConversationList';
 import ChatWindow from '../components/ChatWindow';
 import { SendMessageService } from '../services/sendMessage.service';
+import { useCurrentUser } from '@/hooks/auth/useCurrentUser';
 
 interface Conversation {
   id: string;
@@ -28,6 +29,7 @@ export default function Home() {
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [selectedConversation, setSelectedConversation] = useState<string | null>(null);
   const [messagesByConversation, setMessagesByConversation] = useState<MessagesByConversation>({});
+  const { user: currentUser } = useCurrentUser();
 
   const handleNewConversation = () => {
     const newId = uuidv4();
@@ -43,7 +45,7 @@ export default function Home() {
   const handleSendMessage = async (userMessage: string) => {
     if (!selectedConversation) return;
 
-    const messageService = new SendMessageService('https://integrative-task-2-team.onrender.com'); // Cambia la URL de tu servidor
+    const messageService = new SendMessageService('http://localhost:8000/'); // Cambia la URL de tu servidor
 
     // Crear el mensaje del usuario
     const userMessageObj: Message = {
@@ -59,23 +61,42 @@ export default function Home() {
       [selectedConversation]: [...(prev[selectedConversation] || []), userMessageObj],
     }));
 
+    console.log("Enviando mensaje ", userMessage);
+
+    
+
     try {
       // Envía el mensaje al backend y recibe la respuesta
-      const response = await messageService.sendMessage(userMessage);
+      
 
-      // Crear el mensaje del chatbot con la respuesta
-      const botMessage: Message = {
+      if (currentUser?.token) {
+        console.log("Hay token ", currentUser?.token);
+
+        const response = await messageService.sendMessage(currentUser?.token ,userMessage);
+
+        const roundProbability = Math.round(response.request.probability * 100) / 100;
+
+        // Crear el mensaje del chatbot con la respuesta
+        const botMessage: Message = {
         id: response.request._id,
-        text: response.request.generalDiagnosis, // Usamos el diagnóstico general como respuesta
+        text: "Likely general problem: " + response.request.generalProblem + " with a probability of " + roundProbability + "\n" +
+              "General Diagnosis: " + response.request.generalDiagnosis + " \n" +
+              "Specific problem: " + response.request.speceficproblem + " \n",
         timestamp: response.request.createdAt,
         sender: 'bot',
-      };
+        };
 
-      // Actualiza el estado para mostrar el mensaje del chatbot
-      setMessagesByConversation((prev) => ({
-        ...prev,
-        [selectedConversation]: [...(prev[selectedConversation] || []), botMessage],
-      }));
+        // Actualiza el estado para mostrar el mensaje del chatbot
+        setMessagesByConversation((prev) => ({
+          ...prev,
+          [selectedConversation]: [...(prev[selectedConversation] || []), botMessage],
+        }));
+
+      }
+
+      
+
+      
     } catch (error) {
       // Enviar un mensaje de error al chat si ocurre un fallo
       const errorMessage: Message = {

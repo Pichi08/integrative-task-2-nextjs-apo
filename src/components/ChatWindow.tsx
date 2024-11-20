@@ -38,6 +38,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ conversationId, messages, onSen
                   ? 'bg-blue-500 text-white' // Mensajes del usuario
                   : 'bg-gray-300 text-black' // Mensajes del chatbot
               }`}
+              style={{ whiteSpace: 'pre-wrap' }} // Respetar saltos de línea
             >
               <p className="text-sm">{msg.text}</p>
               <span className="text-xs text-gray-400 mt-1 block">

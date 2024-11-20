@@ -4,7 +4,8 @@ import Cookies from "js-cookie";
 
 export const useLogin = () => {
     const login = async (email: string, password: string) => {
-        const authService = new AuthService("https://integrative-task-2-team.onrender.com/");
+        // const authService = new AuthService("https://integrative-task-2-team.onrender.com/");
+        const authService = new AuthService("http://localhost:8000/");
         const user = await authService.login(email, password);
         if (user)
             Cookies.set("currentUser", JSON.stringify(user));

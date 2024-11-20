@@ -14,11 +14,18 @@ export class SendMessageService {
         });
     }
 
-    public async sendMessage(question: string) {
+    public async sendMessage(token: string, question: string) {
+
+        console.log("Enviando mensaje ", question);
     
         try {
-            const response = await this.axios.post('/users/requests/', {
-                question
+            const response = await this.axios.post('/user/requests/', {
+                    question
+            },
+            { 
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
             });
 
             return response.data;
