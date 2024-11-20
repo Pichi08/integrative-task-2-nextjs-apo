@@ -15,14 +15,10 @@ export class RegisterUserService {
     }
 
     public async registerUser(name: string, email: string, password: string) {
-        const billingAddress = "null";
-        const shippingAddress = "null";
-        const country = "null";
-        const city = "null";
         // console.log(name, lastname, email, password, billingAddress, shippingAddress, phone, country, city)
 
         try {
-            const response = await this.axios.post('/users/customers', {
+            const response = await this.axios.post('/users/', {
                 name,
                 email,
                 password

@@ -1,9 +1,7 @@
 "use client";
 
-// import { Navbar } from "@/components/nav-bar/NavBar";
-// import Footer from '@/components/footer/Footer';
 import { useState } from "react";
-import { useRegister } from '@/hooks/register/useRegister';
+import { useRegister } from "@/hooks/register/useRegister";
 import { useRouter } from "next/navigation";
 
 export default function RegisterPage() {
@@ -17,10 +15,8 @@ export default function RegisterPage() {
     const { register: registerFunction } = useRegister();
 
     const onSubmit = async () => {
-        if (uName && lName && email && password && cPassword && phone) {
+        if (uName && email && password && cPassword) {
             if (password === cPassword) {
-                if (phone.length === 10) {
-                    const phonePref = "+57 " + phone;
                     registerFunction(uName, email, password)
                         .then((res) => {
                             if (res?.email != null) {
@@ -34,9 +30,6 @@ export default function RegisterPage() {
                             alert("Incorrect parameters");
                             console.log(err);
                         });
-                } else {
-                    alert("Invalid phone number. Please enter a 10-digit number.");
-                }
             } else {
                 setPassword("");
                 setCPassword("");
@@ -52,48 +45,78 @@ export default function RegisterPage() {
     };
 
     return (
-        <div className="flex flex-col bg-white w-full min-h-screen">
-            <div className="font-[sans-serif] p-8 mx-auto max-w-lg text-center">
-                <h2 className="text-gray-800 text-2xl font-bold mb-6">Create Your Account</h2>
-
-                <form onSubmit={(e) => e.preventDefault()}>
-                    <div className="grid grid-cols-1 gap-5">
-                        {[
-                            { label: "Name", value: uName, onChange: setName, placeholder: "Enter first name" },
-                            // { label: "Last Name", value: lName, onChange: setLastName, placeholder: "Enter last name" },
-                            { label: "Email", value: email, onChange: setEmail, placeholder: "Enter email", type: "email" },
-                            // { label: "Mobile No.", value: phone, onChange: setPhone, placeholder: "Enter mobile number", type: "number" },
-                            { label: "Password", value: password, onChange: setPassword, placeholder: "Enter password", type: "password" },
-                            { label: "Confirm Password", value: cPassword, onChange: setCPassword, placeholder: "Confirm password", type: "password" },
-                        ].map((field, index) => (
-                            <div key={index}>
-                                <label className="text-gray-700 text-sm mb-1 block">{field.label}</label>
-                                <input 
-                                    name={field.label.toLowerCase().replace(" ", "_")} 
-                                    type={field.type || "text"} 
-                                    value={field.value}
-                                    onChange={(e) => field.onChange(e.target.value)}
-                                    className="bg-gray-100 w-full text-gray-800 text-sm px-4 py-3 rounded-md focus:outline-blue-500 transition-all placeholder-gray-400" 
-                                    placeholder={field.placeholder} 
-                                />
-                            </div>
-                        ))}
+        <div className="flex h-screen">
+            {/* Image centered on the left */}
+            <div className="hidden md:flex w-1/2 bg-gray-100 items-center justify-center">
+                <img
+                    src="https://res.cloudinary.com/dapfvvlsy/image/upload/v1732052037/Wz3Ls7t8NhCrxxk07Kt3ErAr-EE9nZfPvHboWpLtV5M-removebg-preview_fshgdj.png"
+                    alt="Register Illustration"
+                    className="max-w-[80%] max-h-[80%] object-contain"
+                />
+            </div>
+            {/* Form on the right */}
+            <div className="flex flex-col w-full md:w-1/2 items-center justify-center p-6 bg-white">
+                <h1 className="text-3xl font-bold mb-6 text-black">Create Account</h1>
+                <form onSubmit={(e) => e.preventDefault()} className="w-full max-w-md">
+                    <div className="space-y-4">
+                        <input
+                            type="text"
+                            placeholder="Name"
+                            value={uName}
+                            onChange={(e) => setName(e.target.value)}
+                            className="w-full border-b border-gray-400 text-black placeholder-gray-500 focus:outline-none focus:border-[#4CAF50] transition-colors"
+                        />
+                        {/* <input
+                            type="text"
+                            placeholder="Last Name"
+                            value={lName}
+                            onChange={(e) => setLastName(e.target.value)}
+                            className="w-full border-b border-gray-400 text-black placeholder-gray-500 focus:outline-none focus:border-[#4CAF50] transition-colors"
+                        /> */}
+                        <input
+                            type="email"
+                            placeholder="Email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            className="w-full border-b border-gray-400 text-black placeholder-gray-500 focus:outline-none focus:border-[#4CAF50] transition-colors"
+                        />
+                        <input
+                            type="password"
+                            placeholder="Password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            className="w-full border-b border-gray-400 text-black placeholder-gray-500 focus:outline-none focus:border-[#4CAF50] transition-colors"
+                        />
+                        <input
+                            type="password"
+                            placeholder="Confirm Password"
+                            value={cPassword}
+                            onChange={(e) => setCPassword(e.target.value)}
+                            className="w-full border-b border-gray-400 text-black placeholder-gray-500 focus:outline-none focus:border-[#4CAF50] transition-colors"
+                        />
+                        {/* <input
+                            type="text"
+                            placeholder="Phone Number"
+                            value={phone}
+                            onChange={(e) => setPhone(e.target.value)}
+                            className="w-full border-b border-gray-400 text-black placeholder-gray-500 focus:outline-none focus:border-[#4CAF50] transition-colors"
+                        /> */}
                     </div>
-
-                    <div className="mt-8 flex flex-col space-y-3 items-center">
-                        <button 
-                            type="button" 
-                            onClick={onSubmit}
-                            className="w-full py-3 px-6 text-sm font-semibold tracking-wider rounded-md text-white bg-[#007bff] hover:bg-blue-600 transition-all"
-                        >
-                            Sign Up
-                        </button>
-                        <button 
-                            type="button" 
+                    <button
+                        type="button"
+                        onClick={onSubmit}
+                        className="w-full mt-6 py-2 bg-[#007bff] text-white rounded hover:bg-blue-600 transition-all"
+                    >
+                        Sign Up
+                    </button>
+                    <div className="mt-4 text-center">
+                        <span className="text-gray-600">Already have an account? </span>
+                        <button
+                            type="button"
                             onClick={redirectToLogin}
-                            className="w-full py-3 px-6 text-sm font-semibold tracking-wider rounded-md text-blue-600 border border-blue-500 hover:bg-blue-50 transition-all"
+                            className="text-[#007bff] font-semibold hover:underline ml-1"
                         >
-                            Back to Login
+                            Log In
                         </button>
                     </div>
                 </form>

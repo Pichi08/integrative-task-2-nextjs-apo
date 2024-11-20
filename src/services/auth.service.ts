@@ -15,7 +15,7 @@ export class AuthService {
     }
 
     public async login(email: string, password: string) {
-        const response = await this.axios.post('/users/login', {
+        const response = await this.axios.post('/login/', {
             email,
             password
         });
