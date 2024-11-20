@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import ConversationList from '../components/ConversationList';
 import ChatWindow from '../components/ChatWindow';
+import { SendMessageService } from '../services/sendMessage.service';
 
 interface Conversation {
   id: string;
@@ -23,20 +24,6 @@ interface MessagesByConversation {
   [conversationId: string]: Message[];
 }
 
-// Simula una llamada al backend
-const sendMessageToBackend = async (text: string): Promise<Message> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve({
-        id: uuidv4(),
-        text,
-        timestamp: new Date().toISOString(), // Fecha generada en el "backend"
-        sender: 'user',
-      });
-    }, 500); // Simula un retraso en la respuesta
-  });
-};
-
 export default function Home() {
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [selectedConversation, setSelectedConversation] = useState<string | null>(null);
@@ -53,34 +40,56 @@ export default function Home() {
     setSelectedConversation(newId);
   };
 
-  const handleSendMessage = async (text: string) => {
+  const handleSendMessage = async (userMessage: string) => {
     if (!selectedConversation) return;
 
-    // Mensaje del usuario
-    const userMessage: Message = {
+    const messageService = new SendMessageService('https://integrative-task-2-team.onrender.com'); // Cambia la URL de tu servidor
+
+    // Crear el mensaje del usuario
+    const userMessageObj: Message = {
       id: uuidv4(),
-      text,
+      text: userMessage,
       timestamp: new Date().toISOString(),
-      sender: 'user', // Tipo literal explícito
+      sender: 'user',
     };
+
+    // Actualiza el estado para mostrar el mensaje del usuario
     setMessagesByConversation((prev) => ({
       ...prev,
-      [selectedConversation]: [...(prev[selectedConversation] || []), userMessage],
+      [selectedConversation]: [...(prev[selectedConversation] || []), userMessageObj],
     }));
 
-    // Simula una respuesta del chatbot
-    setTimeout(() => {
+    try {
+      // Envía el mensaje al backend y recibe la respuesta
+      const response = await messageService.sendMessage(userMessage);
+
+      // Crear el mensaje del chatbot con la respuesta
       const botMessage: Message = {
-        id: uuidv4(),
-        text: `Hola, soy el chatbot. Recibí tu mensaje: "${text}"`,
-        timestamp: new Date().toISOString(),
-        sender: 'bot', // Tipo literal explícito
+        id: response.request._id,
+        text: response.request.generalDiagnosis, // Usamos el diagnóstico general como respuesta
+        timestamp: response.request.createdAt,
+        sender: 'bot',
       };
+
+      // Actualiza el estado para mostrar el mensaje del chatbot
       setMessagesByConversation((prev) => ({
         ...prev,
         [selectedConversation]: [...(prev[selectedConversation] || []), botMessage],
       }));
-    }, 1000); // Retraso de 1 segundo para simular una respuesta del bot
+    } catch (error) {
+      // Enviar un mensaje de error al chat si ocurre un fallo
+      const errorMessage: Message = {
+        id: uuidv4(),
+        text: 'Hubo un error al procesar tu mensaje. Inténtalo nuevamente.',
+        timestamp: new Date().toISOString(),
+        sender: 'bot',
+      };
+
+      setMessagesByConversation((prev) => ({
+        ...prev,
+        [selectedConversation]: [...(prev[selectedConversation] || []), errorMessage],
+      }));
+    }
   };
 
   return (

@@ -29,18 +29,18 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ conversationId, messages, onSen
           <div
             key={msg.id}
             className={`flex ${
-              msg.sender === 'user' ? 'justify-end' : 'justify-start' // Alinea el bloque completo
+              msg.sender === 'user' ? 'justify-end' : 'justify-start'
             }`}
           >
             <div
               className={`message max-w-lg p-3 rounded-lg mb-3 ${
                 msg.sender === 'user'
-                  ? 'bg-blue-500 text-white' // Mensajes del usuario (derecha)
-                  : 'bg-gray-300 text-black' // Mensajes del chatbot (izquierda)
+                  ? 'bg-blue-500 text-white' // Mensajes del usuario
+                  : 'bg-gray-300 text-black' // Mensajes del chatbot
               }`}
             >
               <p className="text-sm">{msg.text}</p>
-              <span className="text-xs text-black mt-1 block">
+              <span className="text-xs text-gray-400 mt-1 block">
                 {new Date(msg.timestamp).toLocaleString()}
               </span>
             </div>
