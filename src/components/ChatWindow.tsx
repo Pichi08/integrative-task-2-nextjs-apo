@@ -10,11 +10,15 @@ interface Message {
 
 interface ChatWindowProps {
   conversationId: string | null;
-  messages: Message[];
+  messages: Message[]; // Asegúrate de pasar siempre un array, incluso vacío
   onSendMessage: (message: string) => void;
 }
 
-const ChatWindow: React.FC<ChatWindowProps> = ({ conversationId, messages, onSendMessage }) => {
+const ChatWindow: React.FC<ChatWindowProps> = ({
+  conversationId,
+  messages = [], // Valor predeterminado para evitar errores
+  onSendMessage,
+}) => {
   if (!conversationId) {
     return <div className="chat-window p-4">Selecciona o crea una nueva conversación</div>;
   }
