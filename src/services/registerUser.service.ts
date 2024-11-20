@@ -18,7 +18,7 @@ export class RegisterUserService {
         // console.log(name, lastname, email, password, billingAddress, shippingAddress, phone, country, city)
 
         try {
-            const response = await this.axios.post('/users/', {
+            const response = await this.axios.post('/user/', {
                 name,
                 email,
                 password

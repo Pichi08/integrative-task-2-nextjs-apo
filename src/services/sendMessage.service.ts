@@ -16,7 +16,7 @@ export class SendMessageService {
 
     public async sendMessage(token: string, question: string) {
 
-        console.log("Enviando mensaje ", question);
+        //console.log("Enviando mensaje ", question);
     
         try {
             const response = await this.axios.post('/user/requests/', {

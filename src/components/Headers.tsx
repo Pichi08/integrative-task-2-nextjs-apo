@@ -13,12 +13,11 @@ const Header: React.FC = () => {
   const { logout } = useLogout();
   const router = useRouter();
   const { user: currentUser } = useCurrentUser();
-
   const isLogged = currentUser != null;
 
   return (
     <div className="header">
-      <h1>Usuario</h1>
+      <h1>{currentUser?.name}</h1>
       {isLogged && (
       <button 
         className="logout-icon" 
