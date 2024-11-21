@@ -13,7 +13,7 @@ const ConversationList: React.FC<ConversationListProps> = ({
 }) => {
   return (
     <div className="conversation-list flex flex-col h-full">
-      <h2 className="text-xl font-semibold text-gray-800 mb-4">Historial de Conversaciones</h2>
+      <h2 className="text-xl font-semibold text-gray-800 mb-4">Conversation History</h2>
       <ul className="flex-1 overflow-auto">
         {conversations.map((conv) => (
           <li
@@ -30,7 +30,7 @@ const ConversationList: React.FC<ConversationListProps> = ({
           className="mt-4 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
           onClick={onNewConversation}
         >
-          Nueva Conversación
+          New Conversation
         </button>
       )}
     </div>

@@ -44,7 +44,7 @@ export default function Home() {
     const fetchConversations = async () => {
       if (!currentUser?.token) return;
 
-      const chatHistoryService = new ChatHistoryService('http://localhost:8000/');
+      const chatHistoryService = new ChatHistoryService('https://integrative-task-2-team.onrender.com/');
 
       try {
         const history = await chatHistoryService.getAllHistory(currentUser.token);
@@ -65,12 +65,14 @@ export default function Home() {
     fetchConversations();
   }, [currentUser]);
 
+  
+
   const handleSelectConversation = async (conversationId: string) => {
     setSelectedConversation(conversationId);
   
     if (!currentUser?.token) return;
   
-    const getChatService = new GetChatService('http://localhost:8000/');
+    const getChatService = new GetChatService('https://integrative-task-2-team.onrender.com/');
   
     try {
       const chatDetails = await getChatService.getChat(currentUser.token, conversationId);
@@ -113,27 +115,70 @@ export default function Home() {
 
   const handleSendMessage = async (userMessage: string) => {
     if (!selectedConversation) return;
-
-    const messageService = new SendMessageService('http://localhost:8000/');
-
+  
+    // Verificar si el mensaje es "help"
+    if (userMessage.toLowerCase().trim() === 'help') {
+      const helpMessage: Message = {
+        id: uuidv4(),
+        text: `\n        Welcome to the Car Troubleshooting Chatbot!\n        Here are some examples of keywords you can use:\n        \n        - "starter doesn't crank" (The starter motor does not turn over)\n        - "low battery" (The battery voltage is low)\n        - "high battery" (The battery voltage is high, potentially overcharged)\n        - "no spark" (No spark at the spark plugs)\n        - "fuel present" (Fuel is reaching the system)\n        - "stalls in rain" (The engine stalls when it rains)\n        - "engine doesn't fire" (The engine doesn’t start firing at all)\n\n        Just type one of these or similar phrases to get help with your car's problem.\n    `,
+        timestamp: new Date().toISOString(),
+        sender: 'bot', // Asegúrate de que sea 'bot'
+      };
+  
+      setMessagesByConversation((prev) => ({
+        ...prev,
+        [selectedConversation]: [...(prev[selectedConversation] || []), helpMessage],
+      }));
+      return; // No continuar procesando el mensaje si es "help"
+    }
+  
+    // Verificar si el mensaje no es uno de los valores válidos
+    const validKeywords = [
+      "starter doesn't crank",
+      "low battery",
+      "high battery",
+      "no spark",
+      "fuel present",
+      "stalls in rain",
+      "engine doesn't fire",
+    ];
+  
+    if (!validKeywords.some(keyword => userMessage.toLowerCase().includes(keyword.toLowerCase()))) {
+      const invalidMessage: Message = {
+        id: uuidv4(),
+        text: 'El mensaje no es válido. Por favor, ingresa una frase válida para diagnosticar el problema del automóvil.',
+        timestamp: new Date().toISOString(),
+        sender: 'bot',
+      };
+  
+      setMessagesByConversation((prev) => ({
+        ...prev,
+        [selectedConversation]: [...(prev[selectedConversation] || []), invalidMessage],
+      }));
+      return; // No continuar procesando el mensaje si es inválido
+    }
+  
+    // Continuar con el envío del mensaje y la llamada a la API si el mensaje es válido
+    const messageService = new SendMessageService('https://integrative-task-2-team.onrender.com/');
+  
     const userMessageObj: Message = {
       id: uuidv4(),
       text: userMessage,
       timestamp: new Date().toISOString(),
       sender: 'user',
     };
-
+  
     setMessagesByConversation((prev) => ({
       ...prev,
       [selectedConversation]: [...(prev[selectedConversation] || []), userMessageObj],
     }));
-
+  
     try {
       if (currentUser?.token) {
         const response = await messageService.sendMessage(currentUser.token, userMessage);
-
+  
         const roundProbability = Math.round(response.request.probability * 100) / 100;
-
+  
         const botMessage: Message = {
           id: response.request._id,
           text: `Likely general problem: ${response.request.generalProblem} with a probability of ${roundProbability}\n` +
@@ -142,7 +187,7 @@ export default function Home() {
           timestamp: response.request.createdAt,
           sender: 'bot',
         };
-
+  
         setMessagesByConversation((prev) => ({
           ...prev,
           [selectedConversation]: [...(prev[selectedConversation] || []), botMessage],
@@ -155,13 +200,14 @@ export default function Home() {
         timestamp: new Date().toISOString(),
         sender: 'bot',
       };
-
+  
       setMessagesByConversation((prev) => ({
         ...prev,
         [selectedConversation]: [...(prev[selectedConversation] || []), errorMessage],
       }));
     }
   };
+  
 
   return (
     <>

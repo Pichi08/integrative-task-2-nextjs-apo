@@ -20,14 +20,14 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
   onSendMessage,
 }) => {
   if (!conversationId) {
-    return <div className="chat-window p-4">Selecciona o crea una nueva conversación</div>;
+    return <div className="chat-window p-4">Select or create a new conversation</div>;
   }
 
   return (
     <div className="chat-window flex flex-col p-4 bg-gray-100 h-full">
       <div className="messages flex-1 overflow-y-auto">
         {messages.length === 0 && (
-          <p className="text-gray-500">No hay mensajes en esta conversación.</p>
+          <p className="text-gray-500">There are no messages in this conversation.</p>
         )}
         {messages.map((msg) => (
           <div
